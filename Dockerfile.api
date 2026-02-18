@@ -1,0 +1,23 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY server.py /app/server.py
+
+# Minimal runtime deps for the demo/beta server
+RUN pip install --no-cache-dir \
+    fastapi==0.115.6 \
+    uvicorn==0.32.1 \
+    gunicorn==23.0.0 \
+    sqlalchemy==2.0.36 \
+    psycopg2-binary==2.9.10 \
+    pydantic==2.10.3
+
+EXPOSE 8000
+
+CMD ["gunicorn", "-w", "2", "-k", "uvicorn.workers.UvicornWorker", "server:app", "--bind", "0.0.0.0:8000"]

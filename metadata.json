@@ -1,0 +1,8 @@
+{
+  "name": "IVECGuard AI - Production SaaS",
+  "description": "Full end-to-end workforce behavior and security intelligence platform.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

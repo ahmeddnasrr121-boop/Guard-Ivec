@@ -1,0 +1,20 @@
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+COPY package.json ./
+# No lockfile in this repo; use npm install for reproducible-enough beta builds.
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+FROM nginx:alpine
+
+# Copy built assets
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Nginx config (API reverse proxy + SPA routing)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
